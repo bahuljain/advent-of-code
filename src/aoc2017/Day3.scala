@@ -10,40 +10,37 @@ object Day3 extends App {
   def solution1(x: Int): Int = {
     def box(i: Int): Int = Math.pow(2 * i + 1, 2).toInt
     val r = Stream.from(0).find(box(_) >= x).get
-    val d = Try(Stream.continually((r until 0 by -1) ++ (0 until r)).flatten.apply(box(r) - x)).getOrElse(0)
+    val d = Stream.continually((r to 0 by -1) ++ (1 until r)).flatten.apply(box(r) - x)
     r + d
   }
 
-  def solution2(x: Int): Int = {
-    val grid = mutable.Map[(Int, Int), Int]((0, 0) -> 1, (1, 0) -> 1)
-    var (r, step, dir) = (1, 1, (0, 1))
-    def g(loc: (Int, Int)) = grid.getOrElse(loc, 0)
-    def getSum(loc: (Int, Int)) = {
-      val (u, v) = loc
-      val sum = g((u + 1, v)) + g((u + 1, v + 1)) + g((u, v + 1)) + g((u - 1, v + 1)) + g((u - 1, v)) +
-        g((u - 1, v - 1)) + g((u, v - 1)) + g((u + 1, v - 1))
-      grid.put((u, v), sum)
+  def solution2(a: Int): Int = {
+    type Vec = (Int, Int)
+    val grid = mutable.Map[Vec, Int]((0, 0) -> 1)
+    def g(pos: Vec) = grid.getOrElse(pos, 0)
+    def getSum(pos: Vec) = {
+      val (x, y) = pos
+      val sum = g((x + 1, y)) + g((x + 1, y + 1)) + g((x, y + 1)) + g((x - 1, y + 1)) + g((x - 1, y)) +
+        g((x - 1, y - 1)) + g((x, y - 1)) + g((x + 1, y - 1)) + g((x, y))
+      grid.put((x, y), sum)
       sum
     }
-    def next(prev: (Int, Int)): (Int, Int) = {
-      val (u, v) = prev
-      if (u == r && v == -r) {
+    var (r, dir) = (0, (0, 1))
+    def out(loc: Vec, dir: Vec, r: Int) = Math.pow(loc._1 + dir._1, 2) + Math.pow(loc._2 + dir._2, 2) > 2 * r * r
+    def spiralNext(prev: Vec): Vec = {
+      val (x, y) = prev
+      if (x == r && y == -r) {
         r += 1
-        step = 2 * r - 1
-        (u + 1, v)
+        (x + 1, y)
       } else {
-        val nxt = (u + dir._1, v + dir._2)
-        if (step == 1) {
-          step = 2 * r
+        val nxt = (x + dir._1, y + dir._2)
+        if (out(nxt, dir, r))
           dir = (- dir._2, dir._1)
-        } else {
-          step -= 1
-        }
         nxt
       }
     }
 
-    Stream.iterate((1, 0))(next).map(getSum).find(_ > x).get
+    Stream.iterate((0, 0))(spiralNext).map(getSum).find(_ > a).get
   }
 
   println(solution1(in))
