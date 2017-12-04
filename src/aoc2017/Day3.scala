@@ -3,7 +3,6 @@ package aoc2017
 object Day3 extends App {
   val in = 312051
 
-
   def solution1(x: Int): Int = {
     def box(i: Int): Int = Math.pow(2 * i + 1, 2).toInt
 
