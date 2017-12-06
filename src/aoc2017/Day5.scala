@@ -6,14 +6,14 @@ import scala.io.Source
 object Day5 extends App {
   val in = Source.fromFile("src/aoc2017/day5.input.txt").getLines.map(_.toInt).toArray
 
-  def solution(arr: Array[Int], fn: (Int) => Int): Int = {
+  def solution(seq: Array[Int], fn: (Int) => Int): Int = {
     @tailrec
     def getExitStep(pos: Int, steps: Int): Int = {
-      if (pos >= arr.length || pos < 0)
+      if (pos >= seq.length || pos < 0)
         steps
       else {
-        val jump = arr(pos)
-        arr(pos) = jump + fn(if (jump >= 3) -1 else 1)
+        val jump = seq(pos)
+        seq(pos) = jump + fn(if (jump >= 3) -1 else 1)
         getExitStep(pos +  jump, steps + 1)
       }
 
