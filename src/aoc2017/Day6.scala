@@ -5,14 +5,10 @@ object Day6 extends App {
   val visitedState = scala.collection.mutable.Map[List[Int], Int](banks.toList -> 0)
 
   def findFirstRepeat(iteration: Int): (Int, Int) = {
-    val maxBankMoney = banks.max
-    val maxBankIndex = banks.indexOf(maxBankMoney)
-
+    val (maxBankMoney, maxBankIndex) = banks.zipWithIndex.maxBy(_._1)
     banks(maxBankIndex) = 0
 
-    (1 to maxBankMoney) foreach { i =>
-      banks((maxBankIndex + i) % banks.length) += 1
-    }
+    (1 to maxBankMoney) foreach (i => banks((maxBankIndex + i) % banks.length) += 1)
 
     if (visitedState.contains(banks.toList))
       (iteration, iteration - visitedState(banks.toList))
