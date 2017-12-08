@@ -12,10 +12,10 @@ object Day8 extends App {
     case "<" => a < b
     case ">" => a > b
     case "==" => a == b
-    case _ => throw new Exception("Invalid operator")
+    case _ => throw new Exception(s"Invalid operator - $op")
   }
 
-  scala.io.Source.fromFile("src/aoc2017/day8.input.txt").getLines.toList foreach {
+  scala.io.Source.fromFile("src/aoc2017/day8.input.txt").getLines foreach {
     case instr(r1, action, by, r2, op, value) =>
       val (reg1, reg2) = (registers(r1), registers(r2))
 
