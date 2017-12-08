@@ -1,14 +1,11 @@
 package aoc2017
 
-import scala.collection.mutable
-import scala.io.Source
-
 object Day8 extends App {
-  val instr = """(\w+) (\w+) (-)?(\d+) if (\w+) (.*) (-)?(\d+)""".r
-  val registers = mutable.Map[String, Int]()
+  val instr = """(\w+) (\w+) (.*) if (\w+) (.*) (.*)""".r
+  val registers = scala.collection.mutable.Map[String, Int]().withDefaultValue(0)
   var maxEver = 0
 
-  def ops(op: String, a: Int, b: Int): Boolean = op match {
+  def applyOp(op: String, a: Int, b: Int): Boolean = op match {
     case "!=" => a != b
     case ">=" => a >= b
     case "<=" => a <= b
@@ -18,19 +15,14 @@ object Day8 extends App {
     case _ => throw new Exception("Invalid operator")
   }
 
-  Source.fromFile("src/aoc2017/day8.input.txt").getLines.toList foreach {
-    case instr(r1, b, c, d, r2, op, g, h) =>
-      val reg1 = registers.getOrElse(r1, 0)
-      val reg2 = registers.getOrElse(r2, 0)
-      val offset = (if (b equals "inc") 1 else -1) * Option(c).map(_ => -1).getOrElse(1) * d.toInt
-      val value = (if (g == null) 1 else -1) * h.toInt
+  scala.io.Source.fromFile("src/aoc2017/day8.input.txt").getLines.toList foreach {
+    case instr(r1, action, by, r2, op, value) =>
+      val (reg1, reg2) = (registers(r1), registers(r2))
 
-      if (ops(op, reg2, value)) {
-        val updatedValue = reg1 + offset
+      if (applyOp(op, reg2, value.toInt)) {
+        val updatedValue = reg1 + ((if (action equals "inc") 1 else -1) * by.toInt)
         registers.update(r1, updatedValue)
-
-        if (updatedValue > maxEver)
-          maxEver = updatedValue
+        maxEver = if (updatedValue > maxEver) updatedValue else maxEver
       }
   }
 
