@@ -2,11 +2,15 @@ package aoc2017
 
 import scala.io.Source
 
+/**
+  * root - veboyvy
+  * Fixed weight should be - 749
+  */
 object Day7 extends App {
-  val line = """(\w+) \((\d+)\)( -> (.*))?""".r
+  val line = """(\w+) \((\d+)\)(?: -> (.*))?""".r
 
   val in = Source.fromFile("src/aoc2017/day7.input.txt").getLines.toList map {
-    case line(name, weight, _, children) => name ->
+    case line(name, weight, children) => name ->
       (weight.toInt, Option(children).map(_.split(", ").toSet).getOrElse(Set()))
   } toMap
 
@@ -51,6 +55,6 @@ object Day7 extends App {
     }
   }
 
-  println(root)
+  println(s"root - $root")
   towerSums(root)
 }
