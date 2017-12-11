@@ -12,7 +12,6 @@ object Day10 extends App {
         Stream.continually(seq).flatten.slice(pos, pos + length).reverse.zipWithIndex foreach {
           case (value, idx) => seq((pos + idx) % 256) = value
         }
-
         pos = (pos + length + skip) % 256
         skip += 1
       }
@@ -29,6 +28,5 @@ object Day10 extends App {
       .map(i => "%02X".format(i))
       .mkString
 
-  println(s"part 1 - $part1")
-  println(s"part 2 - $part2")
+  println(s"part 1 - $part1\npart 2 - $part2")
 }
