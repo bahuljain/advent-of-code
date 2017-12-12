@@ -15,7 +15,7 @@ object Day11 extends App {
 
     val distance: Int = {
       val diff = Math.abs(Math.abs(x) - Math.abs(y))
-      if (Math.abs(x) > Math.abs(y)) Math.abs(y) + diff else Math.abs(x) + diff / 2
+      if (Math.abs(x) > Math.abs(y)) Math.abs(y) + diff / 2 else Math.abs(x) + diff / 2
     }
   }
 
