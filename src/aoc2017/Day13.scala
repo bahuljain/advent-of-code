@@ -3,9 +3,9 @@ package aoc2017
 object Day13 extends App {
 
   case class Scanner(depth: Int, range: Int) {
-    def hasCaughtAtTime(time: Int): Boolean = time % (2 * range - 2) == 0
+    def hasPassed(delay: Int = 0): Boolean = (delay + depth) % (2 * range - 2) != 0
 
-    def penalty(time: Int): Int = if (hasCaughtAtTime(time)) depth * range else 0
+    def penalty: Int = if (hasPassed()) 0 else depth * range
   }
 
   val line = """(\d+): (\d+)""".r
@@ -16,16 +16,11 @@ object Day13 extends App {
 
   val maxDepth = firewall.keys.max
 
-  val totalPenaltyIncurred: Int =
-    (0 to maxDepth).map(depth => firewall.get(depth).map(_.penalty(depth)).getOrElse(0)).sum
+  val penalty = (0 to maxDepth).map(depth => firewall.get(depth).map(_.penalty).getOrElse(0)).sum
 
-  val delayToAvoidGettingCaught: Int = {
+  def hasPassedAll(delay: Int) = 0 to maxDepth forall (depth => firewall.get(depth).forall(_.hasPassed(delay)))
 
-    def hasPassedFirewall(delay: Int): Boolean =
-      (0 to maxDepth).forall(depth => firewall.get(depth).forall(!_.hasCaughtAtTime(depth + delay)))
+  val delay = Stream.from(0).find(hasPassedAll).get
 
-    Stream.from(0).find(hasPassedFirewall).get
-  }
-
-  println(s"part 1 - $totalPenaltyIncurred\npart 2 - $delayToAvoidGettingCaught")
+  println(s"part 1 - $penalty\npart 2 - $delay")
 }
