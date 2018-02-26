@@ -21,12 +21,12 @@ object Day10 extends App {
 
   val part1 = knotHash(in.split(",").map(_.toInt), 1).take(2).product
 
-  val part2: String =
+  def knotHash(in: String): String =
     knotHash(in.toCharArray.map(_.toInt) ++ Array(17, 31, 73, 47, 23), 64)
       .grouped(16)
       .map(_.reduceLeft(_ ^ _))
       .map(i => "%02x".format(i))
       .mkString
 
-  println(s"part 1 - $part1\npart 2 - $part2")
+  println(s"part 1 - $part1\npart 2 - ${knotHash(in)}")
 }
